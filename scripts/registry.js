@@ -3,6 +3,7 @@ import { join } from "path";
 const OUTPUT_FILE = "./registry.json";
 const VALID_CATEGORIES = ["Skin", "Texture", "World", "Mod", "DLC"];
 const REQUIRED_FIELDS = ["id", "name", "author", "description", "category", "thumbnail", "zips", "version"];
+const IGNORED_DIRS = [".git", ".github", "scripts"];
 function validateMeta(meta, pkgDir) {
   const errors = [];
   for (const field of REQUIRED_FIELDS) {
@@ -48,6 +49,7 @@ try {
 for (const entry of entries) {
   const pkgPath = entry;
   if (!statSync(pkgPath).isDirectory()) continue;
+  if (!statSync(pkgPath).isDirectory() || IGNORED_DIRS.includes(entry) || entry.startsWith(".")) continue;
   const metaPath = join(pkgPath, "meta.json");
   let raw;
   try {
